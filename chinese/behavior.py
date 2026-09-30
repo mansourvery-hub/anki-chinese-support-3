@@ -325,7 +325,16 @@ def fill_all_rubies(hanzi, note):
 
 def update_fields(note, focus_field, fields):
     copy = dict(note)
-    hanzi = get_first(config['fields']['hanzi'], copy)
+    # Prefer the field just edited when it is itself a Hanzi field, so note
+    # types with two Hanzi-mapped fields (e.g. a word field plus a sentence
+    # field) fill from the edited one. Otherwise fall back to the first
+    # Hanzi field exactly as before, keeping single-field notes identical.
+    if (focus_field in config['fields']['hanzi']
+            and focus_field in copy
+            and (copy[focus_field] or '').strip()):
+        hanzi = copy[focus_field]
+    else:
+        hanzi = get_first(config['fields']['hanzi'], copy)
     if not hanzi:
         return False
     hanzi = cleanup(hanzi)
