@@ -351,7 +351,9 @@ def update_fields(note, focus_field, fields):
         fill_all_rubies(hanzi, copy)
 
     if focus_field in config['fields']['hanzi']:
-        if copy[focus_field]:
+        if focus_field in copy and not copy[focus_field]:
+            erase_fields(copy, config.get_fields())
+        else:
             fill_alt(hanzi, copy)
             fill_all_defs(hanzi, copy)
             fill_classifiers(hanzi, copy)
@@ -364,8 +366,6 @@ def update_fields(note, focus_field, fields):
             fill_all_rubies(hanzi, copy)
             fill_silhouette(hanzi, copy)
             fill_usage(hanzi, copy)
-        else:
-            erase_fields(copy, config.get_fields())
     elif focus_field in config['fields']['pinyin']:
         reformat_transcript(copy, 'pinyin', 'pinyin')
     elif focus_field in config['fields']['pinyinTaiwan']:
